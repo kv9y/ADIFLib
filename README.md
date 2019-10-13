@@ -9,7 +9,7 @@ ADIFLib simply reads an ADIF file into a C# List of Dictionary items that repres
 
 ADX formatted files are not yet supported but will be implemented in future versions.
 
-If you need an ADIF parser, I hope you enjoy this library, whether it is for an an Amateur Radio application or not.  
+If you need an ADIF parser for your amateur radio program, I hope you enjoy this library.  
 
 73
 Ken Linder
