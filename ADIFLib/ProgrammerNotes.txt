@@ -24,7 +24,8 @@ ADIF
 			TokenCollection
 				Token
 ----------------------------------------------------------------------------------------------
-
+Conventions
+Private properties that have a public presentation should begin with an underscore.
 
 
 20191012 -	This is really ADIFLib version 2.  Why?  Version 1 was getting far too top heavy.  
