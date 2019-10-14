@@ -116,7 +116,7 @@ namespace ADIFLib
                     break;  // Stop when a comma is found, if handling a USERDEF tag.
                 else
                 {
-                    this.Data += workingToken[workingNDX];
+                    this._data += workingToken[workingNDX];
                     workingNDX++;
                 }
             }
