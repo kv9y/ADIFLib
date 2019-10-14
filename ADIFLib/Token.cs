@@ -15,12 +15,12 @@ namespace ADIFLib
     public class Token
     {
         // publics
-        public string Name { get => _name.Trim(); set => _name = value; }
+        public string Name { get => _name.Trim(); set { _name = value; UpdateLength(); } }
         public uint Length { get => _length; set => _length = value; }
         public char ENUMType { get => _eNUMType; set => _eNUMType = value; }
-        public string Data { get => _data; set  { _data = value; _length = (uint)value.Length; } }
-        public string EnumerationItems { get => _enumerationItems; set => _enumerationItems = value; }
-        public bool IsHeader { get => _isHeader; set => _isHeader = value; }
+        public string Data { get => _data; set  { _data = value; UpdateLength(); } }
+        public string EnumerationItems { get => _enumerationItems; set { _enumerationItems = value; UpdateLength(); } }
+        public bool IsHeader { get => _isHeader; set {_isHeader = value; UpdateLength(); } }
 
 
         // locals
@@ -139,5 +139,28 @@ namespace ADIFLib
 
         }
 
+        /// <summary>
+        /// Return the properly constructed ADIF tag.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            if (_isHeader)
+                UpdateLength();  // Just be certain we have the updated length.
+
+            //here
+
+            return base.ToString();
+        }
+
+        /// <summary>
+        /// Automatically update length field.
+        /// </summary>
+        private void UpdateLength()
+        {
+            // The constant 3 represents the comma and two brackets around the enumerations.
+            // The addition of enumerations is only possible for USERDEF header tags. 
+            _length = (uint)_data.Length + (IsHeader && _name.ToUpper().StartsWith("USERDEF")? 3 + (uint)_enumerationItems.Length:0);
+        }
     }
 }
