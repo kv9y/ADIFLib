@@ -5,7 +5,7 @@ This is a simple library for reading and parsing ADIF files, written in Visual S
 
 ADIF files are typically used in ham radio applications but could be used by other applications as well.  
 
-ADIFLib simply reads an ADIF file into a C# List of Dictionary items that represent the columns within the ADIF file.  There are many import options that can be used.  Contextural validation of the imported data is not not performed.  This library is also capable of writing ADIF formatted files.
+ADIFLib simply reads an ADIF file into a C# List of items that represent the data within the ADIF file.  There are many import options that can be used.  Contextural validation of the imported data is not performed.  This library is also capable of writing ADIF formatted files.
 
 ADX formatted files are not yet supported but will be implemented in future versions.
 

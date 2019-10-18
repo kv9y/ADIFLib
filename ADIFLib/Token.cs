@@ -95,7 +95,7 @@ namespace ADIFLib
             {
                 workingNDX++;
                 // Get the ADIF enum type.  Must be a single character.
-                ENUMType = workingToken[workingNDX];
+                _eNUMType= workingToken[workingNDX];
                 workingNDX++;
             }
 
@@ -148,9 +148,12 @@ namespace ADIFLib
             if (_isHeader)
                 UpdateLength();  // Just be certain we have the updated length.
 
-            //here
+            // This builds the complete ADIF tag.
+            string tagToReturn = string.Format("<{0}:{1}{2}>{3}{4}", _name, _length,
+                (_isHeader && _eNUMType != ' ' ? ":" + _eNUMType.ToString() : ""),
+                _data, (_isHeader && _enumerationItems != "" ? "," + _enumerationItems : ""));
 
-            return base.ToString();
+            return tagToReturn;
         }
 
         /// <summary>
