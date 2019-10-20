@@ -51,6 +51,19 @@ namespace ADIFLib
             }
         }
 
+        /// <summary>
+        /// Instantiate an ADIF Token
+        /// </summary>
+        /// <param name="TokenString">Single token string assuming there are no embedded special characters.</param>
+        public Token(string TokenString)
+        {
+            if (TokenString.Trim() != "") /* if empty string is passed, assume no initialization */
+            {
+                ParseToken(TokenString);
+            }
+        }
+
+
         private void ParseToken(string TokenString)
         {
             // Accept an ADIF token and populate the internal token items.

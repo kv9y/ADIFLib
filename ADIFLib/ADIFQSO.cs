@@ -10,10 +10,8 @@ using System.Threading.Tasks;
 
 namespace ADIFLib
 {
-    public class ADIFQSO
+    public class ADIFQSO : TokenCollection
     {
-
-
         /// <summary>
         /// Instantiate ADIFQSO with no initial population.
         /// </summary>
