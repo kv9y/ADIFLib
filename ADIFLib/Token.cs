@@ -151,7 +151,7 @@ namespace ADIFLib
             // This builds the complete ADIF tag.
             string tagToReturn = string.Format("<{0}:{1}{2}>{3}{4}", _name, _length,
                 (_isHeader && _eNUMType != ' ' ? ":" + _eNUMType.ToString() : ""),
-                _data, (_isHeader && _enumerationItems != "" ? "," + _enumerationItems : ""));
+                _data, (_isHeader && _enumerationItems != "" ? ",{" + _enumerationItems + "}" : ""));
 
             return tagToReturn;
         }
@@ -163,7 +163,9 @@ namespace ADIFLib
         {
             // The constant 3 represents the comma and two brackets around the enumerations.
             // The addition of enumerations is only possible for USERDEF header tags. 
-            _length = (uint)_data.Length + (IsHeader && _name.ToUpper().StartsWith("USERDEF")? 3 + (uint)_enumerationItems.Length:0);
+            // Basically, just take the length of data and if enumeration items exist, add the length of
+            // those items plus 3.
+            _length = (uint)_data.Length + (IsHeader && _name.ToUpper().StartsWith("USERDEF") && _enumerationItems!="" ? 3 + (uint)_enumerationItems.Length:0);
         }
     }
 }
