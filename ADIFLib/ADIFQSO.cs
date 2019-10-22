@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 /// <summary>
 /// ADIF QSO Class
@@ -24,7 +21,7 @@ namespace ADIFLib
         /// <param name="ParseThisString"></param>
         public ADIFQSO(string ParseThisString)
         {
-            //here
+            ParseStringToADIFQSO(ParseThisString);
         }
 
         /// <summary>
@@ -33,7 +30,17 @@ namespace ADIFLib
         /// <param name="ParseThisString"></param>
         public void ParseStringToADIFQSO(string ParseThisString)
         {
-            //here
+            this.PullApartLine(ParseThisString, false);
+
+            //// The terminating <eor> is optional when parsing.
+            //string[] tokens = ParseThisString.Split('<');  // Use "<" to determine where the token starts.
+
+            //// loop through each token
+            //foreach (string token in tokens)
+            //{
+            //    if (token.ToUpper()!="EOR>")  /* ignore terminating token */
+            //        this.Add(new Token("<" + token, false));  // Add "<" to make it a complete token.  The .Split() call removes this character.
+            //}
         }
 
         /// <summary>
@@ -42,8 +49,13 @@ namespace ADIFLib
         /// <returns></returns>
         public override string ToString()
         {
-            //here - don't forget to end with <eor>.
-            return base.ToString();
+            //StringBuilder retQSORecord = new StringBuilder();
+            //foreach (Token thisToken in this)
+            //{
+            //    retQSORecord.Append(thisToken.ToString());
+            //}
+            //retQSORecord.Append("<eor>");
+            return base.ToString() + "<eor>";
         }
     }
 }

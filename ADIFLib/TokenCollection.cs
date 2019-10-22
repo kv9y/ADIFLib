@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 /// <summary>
 /// Collection of QSO tokens
@@ -61,7 +62,7 @@ namespace ADIFLib
         private void InternalPullApart(string LineToPullApart, bool IsHeader)
         {
             // Do the heavy lifting of pulling apart the line and parsing into individual tokens.
-            string[] tokenStrings = LineToPullApart.Split('<');
+            string[] tokenStrings = LineToPullApart.Split(new char[] {'<'}, System.StringSplitOptions.RemoveEmptyEntries);
 
             // loop through each token
             foreach (string tokenString in tokenStrings)
@@ -70,6 +71,21 @@ namespace ADIFLib
                     this.Add(new Token("<" + tokenString, IsHeader));
             }
         }
+
+        /// <summary>
+        /// Return the token collection as a proper ADIF string.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            StringBuilder retTokenCollection = new StringBuilder();
+            foreach (Token thisToken in this)
+            {
+                retTokenCollection.Append(thisToken.ToString()).Append(" ");
+            }
+            return retTokenCollection.ToString();
+        }
+
 
     }
 
