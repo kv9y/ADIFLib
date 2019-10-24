@@ -9,8 +9,6 @@ namespace ADIFLib
 {
     // This class is common between ADIFHeader and ADIFQSO.
 
-        //here - This is ready for testing.
-
     public class TokenCollection : List<Token>
     {
         public TokenCollection()
