@@ -8,6 +8,12 @@ namespace ADIFLib
 {
     public class ADIFHeader : TokenCollection
     {
+
+        /// <summary>
+        /// Text from the header before the first <
+        /// </summary>
+        public string HeaderPreText = "";
+
         /// <summary>
         /// Instantiate ADIFHeader with no initial population.
         /// </summary>
@@ -29,7 +35,14 @@ namespace ADIFLib
         /// <param name="ParseThisString"></param>
         public void ParseStringToADIFHeader(string ParseThisString)
         {
-            this.PullApartLine(ParseThisString, false);
+            int ltPosition = ParseThisString.IndexOf('<');
+            if (ltPosition > 0)
+            {
+                HeaderPreText = ParseThisString.Substring(0, ltPosition);
+                this.PullApartLine(ParseThisString.Substring(ltPosition), true);
+            }
+            else
+                this.PullApartLine( ParseThisString, true);
         }
 
         /// <summary>
@@ -38,7 +51,7 @@ namespace ADIFLib
         /// <returns></returns>
         public override string ToString()
         {
-            return base.ToString() + "<eoh>";
+            return HeaderPreText + base.ToString() + "<eoh>";
         }
     }
 }
