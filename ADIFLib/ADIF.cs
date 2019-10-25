@@ -19,6 +19,10 @@ namespace ADIFLib
         public ADIFHeader TheADIFHeader;
         public ADIFQSOCollection TheQSOs = new ADIFQSOCollection();
 
+        public bool HasHeader { get => TheADIFHeader != null; }
+
+        public int QSOCount { get => (TheQSOs == null ? 0 : TheQSOs.Count); }
+
         public bool ThrowExceptionOnUnknownLine = false;  // Should an exception be thrown when a non-blank line doesn't end with <eoh> or <eor>?
 
         /// <summary>
@@ -70,44 +74,52 @@ namespace ADIFLib
                 using (StreamReader readThisFile = new StreamReader(FileName))
                 {
                     string theLine = "";
-                    while (!readThisFile.EndOfStream)
+                    try
                     {
-                        theLine = readThisFile.ReadLine().Trim();
-                        if (theLine != "")
+                        while (!readThisFile.EndOfStream)
                         {
-                            if (theLine.ToUpper().EndsWith("<EOH>"))
+                            theLine = readThisFile.ReadLine().Trim();
+                            if (theLine != "")
                             {
-                                if (TheADIFHeader != null)
+                                if (theLine.ToUpper().EndsWith("<EOH>"))
                                 {
-                                    throw new Exception(string.Format("File {0} cannot contain more than one header.  See line {1}", FileName, lineNumber.ToString()));
-                                }
-                                else
-                                {
-                                    TheADIFHeader = new ADIFHeader(theLine);  // Add the header.
-                                    lineNumber++;
-                                }
-                            }
-                            else
-                            {
-                                if (theLine.ToUpper().EndsWith("<EOR>"))
-                                {
-                                    TheQSOs.Add(new ADIFQSO(theLine));
-                                    lineNumber++;
-                                }
-                                else
-                                {
-                                    // Line does not end with <EOR> or <EOH>.  Throw exception?
-                                    if (ThrowExceptionOnUnknownLine)
+                                    if (TheADIFHeader != null)
                                     {
-                                        throw new Exception(string.Format("Unknown line in ADIF file {0}:{1}", FileName, lineNumber.ToString()));
+                                        throw new Exception(string.Format("File {0} cannot contain more than one header.  See line {1}", FileName, lineNumber.ToString()));
                                     }
                                     else
                                     {
+                                        TheADIFHeader = new ADIFHeader(theLine);  // Add the header.
                                         lineNumber++;
+                                    }
+                                }
+                                else
+                                {
+                                    if (theLine.ToUpper().EndsWith("<EOR>"))
+                                    {
+                                        TheQSOs.Add(new ADIFQSO(theLine));
+                                        lineNumber++;
+                                    }
+                                    else
+                                    {
+                                        // Line does not end with <EOR> or <EOH>.  Throw exception?
+                                        if (ThrowExceptionOnUnknownLine)
+                                        {
+                                            throw new Exception(string.Format("Unknown line in ADIF file {0}:{1}", FileName, lineNumber.ToString()));
+                                        }
+                                        else
+                                        {
+                                            lineNumber++;
+                                        }
                                     }
                                 }
                             }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        // rethrow with linenumber
+                        throw new Exception(string.Format("{0}:({1})", ex.Message, lineNumber.ToString()), ex);
                     }
                 }
             }

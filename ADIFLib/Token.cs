@@ -119,8 +119,9 @@ namespace ADIFLib
             workingNDX++;
  //           this.RightSideJunk = workingToken.Substring(workingNDX);  // Get the string from the right of the tag for future testing.  
 
-            if (workingNDX >= workingToken.Length)  /* -1 */
-                throw new Exception(string.Format("Invalid ADIF token string: {0}", workingToken));
+            // Commented out - This can happen and is valid if there is no data for the tag.
+ //           if (workingNDX >= workingToken.Length)  /* -1 */
+ //               throw new Exception(string.Format("Invalid ADIF token string: {0}", workingToken));
 
              // get value string - look for EOS, ',' or <
             while (workingNDX < workingToken.Length && workingToken[workingNDX] != '<')
