@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 /// <summary>
@@ -15,15 +12,30 @@ namespace ADIFLib
 {
     public class ADIF
     {
-
+        /// <summary>
+        /// The ADIF header
+        /// </summary>
         public ADIFHeader TheADIFHeader;
+
+        /// <summary>
+        /// The collection of QSO records within the ADIF.
+        /// </summary>
         public ADIFQSOCollection TheQSOs = new ADIFQSOCollection();
 
+        /// <summary>
+        /// Does the ADIF have a header?
+        /// </summary>
         public bool HasHeader { get => TheADIFHeader != null; }
 
+        /// <summary>
+        /// Number of QSOs within the ADIF.
+        /// </summary>
         public int QSOCount { get => (TheQSOs == null ? 0 : TheQSOs.Count); }
 
-        public bool ThrowExceptionOnUnknownLine = false;  // Should an exception be thrown when a non-blank line doesn't end with <eoh> or <eor>?
+        /// <summary>
+        /// Should an exception be thrown when a non-blank line doesn't end with <eoh> or <eor>?
+        /// </summary>
+        public bool ThrowExceptionOnUnknownLine = false;
 
         /// <summary>
         /// Instantiate an empty ADIF. 
@@ -41,6 +53,47 @@ namespace ADIFLib
             ReadFromFile(FileName);
         }
 
+        /// <summary>
+        /// Add the passed header to the ADIF.
+        /// </summary>
+        /// <param name="Header"></param>
+        public void AddHeader(ADIFHeader Header)
+        {
+            TheADIFHeader = Header;
+        }
+
+        /// <summary>
+        /// Parse and add the passed string as the ADIF header.
+        /// </summary>
+        /// <param name="RawHeader"></param>
+        public void AddHeader(string RawHeader)
+        {
+            TheADIFHeader = new ADIFHeader(RawHeader);
+        }
+
+        /// <summary>
+        /// Add the passed QSO to the ADIF.
+        /// </summary>
+        /// <param name="QSO"></param>
+        public void AddQSO(ADIFQSO QSO)
+        {
+            TheQSOs.Add(QSO);
+        }
+
+        /// <summary>
+        /// Parse and add the passed string as an ADIF QSO.
+        /// </summary>
+        /// <param name="RawQSO"></param>
+        public void AddQSO(string RawQSO)
+        {
+            TheQSOs.Add(new ADIFQSO(RawQSO));
+        }
+
+        /// <summary>
+        /// Save the ADIF to a file.
+        /// </summary>
+        /// <param name="FileName"></param>
+        /// <param name="OverWrite"></param>
         public void SaveToFile(string FileName, bool OverWrite=false)
         {
             if (FileName == "")
@@ -61,6 +114,10 @@ namespace ADIFLib
             }
         }
 
+        /// <summary>
+        /// Read a file into an ADIF file.
+        /// </summary>
+        /// <param name="FileName"></param>
         public void ReadFromFile(string FileName)
         {
             uint lineNumber = 0;
@@ -124,8 +181,7 @@ namespace ADIFLib
                 }
             }
         }
-
-
+        
         /// <summary>
         /// Get ADIFLib version.
         /// </summary>
@@ -139,16 +195,24 @@ namespace ADIFLib
             }
         }
 
+        /// <summary>
+        /// Return the entire ADIF as a ADIF formatted string.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder retCompleteADIF = new StringBuilder();
-            retCompleteADIF.Append(TheADIFHeader.ToString()).Append(TheQSOs.ToString());
+            retCompleteADIF.Append((HasHeader ? TheADIFHeader.ToString() : "")).Append(TheQSOs.ToString());
             return retCompleteADIF.ToString();
         }
 
-
+        // Save the ADIF to a file.
         private void InternalSaveToFile(string FileName, bool Overwrite)
         {
+            if (File.Exists(FileName))
+            {
+                File.Delete(FileName);
+            }
             File.WriteAllText(FileName, this.ToString());
         }
     }

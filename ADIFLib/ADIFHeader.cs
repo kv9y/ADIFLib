@@ -36,13 +36,22 @@ namespace ADIFLib
         public void ParseStringToADIFHeader(string ParseThisString)
         {
             int ltPosition = ParseThisString.IndexOf('<');
-            if (ltPosition > 0)
+            if (ltPosition == -1 && ParseThisString != "") /* no less-than found but there is something in the string */
             {
-                HeaderPreText = ParseThisString.Substring(0, ltPosition);
-                this.PullApartLine(ParseThisString.Substring(ltPosition), true);
+                HeaderPreText = ParseThisString;  // Just pretext in the header.
             }
             else
-                this.PullApartLine( ParseThisString, true);
+            {
+                if (ltPosition > 0)
+                {
+                    HeaderPreText = ParseThisString.Substring(0, ltPosition);
+                    this.PullApartLine(ParseThisString.Substring(ltPosition), true);
+                }
+                else
+                {
+                    this.PullApartLine(ParseThisString, true);
+                }
+            }
         }
 
         /// <summary>
