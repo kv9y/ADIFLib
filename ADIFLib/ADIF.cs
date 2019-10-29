@@ -130,53 +130,14 @@ namespace ADIFLib
             {
                 using (StreamReader readThisFile = new StreamReader(FileName))
                 {
-                    string theLine = "";
                     try
                     {
-                        while (!readThisFile.EndOfStream)
-                        {
-                            theLine = readThisFile.ReadLine().Trim();
-                            if (theLine != "")
-                            {
-                                if (theLine.ToUpper().EndsWith("<EOH>"))
-                                {
-                                    if (TheADIFHeader != null)
-                                    {
-                                        throw new Exception(string.Format("File {0} cannot contain more than one header.  See line {1}", FileName, lineNumber.ToString()));
-                                    }
-                                    else
-                                    {
-                                        TheADIFHeader = new ADIFHeader(theLine);  // Add the header.
-                                        lineNumber++;
-                                    }
-                                }
-                                else
-                                {
-                                    if (theLine.ToUpper().EndsWith("<EOR>"))
-                                    {
-                                        TheQSOs.Add(new ADIFQSO(theLine));
-                                        lineNumber++;
-                                    }
-                                    else
-                                    {
-                                        // Line does not end with <EOR> or <EOH>.  Throw exception?
-                                        if (ThrowExceptionOnUnknownLine)
-                                        {
-                                            throw new Exception(string.Format("Unknown line in ADIF file {0}:{1}", FileName, lineNumber.ToString()));
-                                        }
-                                        else
-                                        {
-                                            lineNumber++;
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        ReadFromStream(readThisFile, ref lineNumber);
                     }
                     catch (Exception ex)
                     {
                         // rethrow with linenumber
-                        throw new Exception(string.Format("{0}:({1})", ex.Message, lineNumber.ToString()), ex);
+                        throw new Exception(string.Format("{0} {1}:({2})", ex.Message, FileName, lineNumber.ToString()), ex);
                     }
                 }
             }
@@ -209,11 +170,60 @@ namespace ADIFLib
         // Save the ADIF to a file.
         private void InternalSaveToFile(string FileName, bool Overwrite)
         {
-            if (File.Exists(FileName))
-            {
-                File.Delete(FileName);
-            }
             File.WriteAllText(FileName, this.ToString());
         }
+
+        // Read from a stream.
+        // Allow multiple lines per header or QSO.
+        private void ReadFromStream(StreamReader TheStream, ref uint LineNumber)
+        {
+            string theLine = "";
+
+            while (!TheStream.EndOfStream)
+            {
+                theLine += TheStream.ReadLine().Trim();
+                if (theLine != "")
+                {
+                    if (theLine.ToUpper().EndsWith("<EOH>"))
+                    {
+                        if (TheADIFHeader != null)
+                        {
+                            throw new Exception(string.Format("File cannot contain more than one header.  See line {0}", LineNumber.ToString()));
+                        }
+                        else
+                        {
+                            TheADIFHeader = new ADIFHeader(theLine);  // Add the header.
+                            LineNumber++;
+                            theLine = "";
+                        }
+                    }
+                    else
+                    {
+                        if (theLine.ToUpper().EndsWith("<EOR>"))
+                        {
+                            TheQSOs.Add(new ADIFQSO(theLine));
+                            LineNumber++;
+                            theLine = "";
+                        }
+                        else
+                        {
+                            // Line does not end with EOR or EOH
+
+                        //    // Line does not end with <EOR> or <EOH>.  Throw exception?
+                        //    if (ThrowExceptionOnUnknownLine)
+                        //    {
+                        //        throw new Exception(string.Format("Unknown line in ADIF file, line {0}", LineNumber.ToString()));
+                        //    }
+                        //    else
+                        //    {
+                        //        LineNumber++;
+                        //    }
+                        }
+                    }
+                }
+            }
+            // If the last line ends with no EOF or EOH, just ignore. 
+        }
+
     }
 }

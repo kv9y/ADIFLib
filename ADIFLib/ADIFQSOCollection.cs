@@ -23,5 +23,6 @@ namespace ADIFLib
             }
             return retQSOs.ToString();
         }
+
     }
 }

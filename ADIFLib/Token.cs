@@ -17,7 +17,7 @@ namespace ADIFLib
         // publics
         public string Name { get => _name.Trim(); set { _name = value; UpdateLength(); } }
         public uint Length { get => _length; set => _length = value; }
-        public char ENUMType { get => _eNUMType; set => _eNUMType = value; }
+        public char UserDefType { get => _UserDefType; set => _UserDefType = value; }
         public string Data { get => _data; set  { _data = value; UpdateLength(); } }
         public string EnumerationItems { get => _enumerationItems; set { _enumerationItems = value; UpdateLength(); } }
         public bool IsHeader { get => _isHeader; set {_isHeader = value; UpdateLength(); } }
@@ -26,7 +26,7 @@ namespace ADIFLib
         // locals
         private string _name = "";
         private uint _length = 0;
-        private char _eNUMType = ' ';  // Single character enumerator type.
+        private char _UserDefType = ' ';  // Single character enumerator type.
         private string _data = "";
         private string _enumerationItems = "";  // CSV of valid enumeration items - used for USERDEF items
         private bool _isHeader = false;  // Flag that indicates whether this is a header.
@@ -61,6 +61,35 @@ namespace ADIFLib
             {
                 ParseToken(TokenString);
             }
+        }
+
+        /// <summary>
+        /// Instantiate an ADIF token with Tag Name and Data.
+        /// </summary>
+        /// <param name="TagName"></param>
+        /// <param name="Data"></param>
+        /// <param name="IsHeader"></param>
+        public Token(string TagName, string Data, bool IsHeader = false)
+        {
+            this._name = TagName;
+            this._data = Data;
+            this._isHeader = IsHeader;
+        }
+
+        /// <summary>
+        /// Instantiate an ADIF token with specific header items.
+        /// </summary>
+        /// <param name="TagName"></param>
+        /// <param name="Data"></param>
+        /// <param name="DataType"></param>
+        /// <param name="Enumerations"></param>
+        public Token(string TagName, string Data, char DataType, string Enumerations = "")
+        {
+            this._name = TagName;
+            this._data = Data;
+            this._isHeader = true;  // If this instantiator is called, it must be a header.
+            this.EnumerationItems = Enumerations;
+            this._UserDefType = DataType;
         }
 
 
@@ -108,7 +137,7 @@ namespace ADIFLib
             {
                 workingNDX++;
                 // Get the ADIF enum type.  Must be a single character.
-                _eNUMType= workingToken[workingNDX];
+                _UserDefType= workingToken[workingNDX];
                 workingNDX++;
             }
 
@@ -164,7 +193,7 @@ namespace ADIFLib
 
             // This builds the complete ADIF tag.
             string tagToReturn = string.Format("<{0}:{1}{2}>{3}{4}", _name, _length,
-                (_isHeader && _eNUMType != ' ' ? ":" + _eNUMType.ToString() : ""),
+                (_isHeader && _UserDefType != ' ' ? ":" + _UserDefType.ToString() : ""),
                 _data, (_isHeader && _enumerationItems != "" ? ",{" + _enumerationItems + "}" : ""));
 
             return tagToReturn;

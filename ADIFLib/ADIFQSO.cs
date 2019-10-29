@@ -24,6 +24,18 @@ namespace ADIFLib
         }
 
         /// <summary>
+        /// Instantiate ADIFQSO with an initial collection of name/data items.
+        /// </summary>
+        /// <param name="TagNameDataListForThisQSO"></param>
+        public ADIFQSO(TokenNameDataList TagNameDataListForThisQSO)
+        {
+            foreach(TokenNameData anItem in TagNameDataListForThisQSO)
+            {
+                this.Add(new Token(anItem.TagName, anItem.Data));
+            }
+        }
+
+        /// <summary>
         /// Populate this ADIFQSO with this QSO string.
         /// </summary>
         /// <param name="ParseThisString"></param>

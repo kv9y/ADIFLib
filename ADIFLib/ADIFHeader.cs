@@ -30,6 +30,30 @@ namespace ADIFLib
         }
 
         /// <summary>
+        /// Instantiate ADIFHeader with header pre text and a collection of name/data items.
+        /// </summary>
+        /// <param name="HeaderPreText"></param>
+        /// <param name="TagNameDataListForThisQSO"></param>
+        public ADIFHeader(string HeaderPreText, TokenNameDataList TagNameDataListForThisQSO)
+        {
+            this.HeaderPreText = HeaderPreText;
+            foreach (TokenNameData anItem in TagNameDataListForThisQSO)
+            {
+                this.Add(new Token(anItem.TagName, anItem.Data));
+            }
+        }
+
+        public void Add(TokenNameData NewItem)
+        {
+            InternalAdd(NewItem);
+        }
+
+        private void InternalAdd(TokenNameData NewItem)
+        {
+            //here
+        }
+
+        /// <summary>
         /// Populate this ADIFHeader with this header string.
         /// </summary>
         /// <param name="ParseThisString"></param>

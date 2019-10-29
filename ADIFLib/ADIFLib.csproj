@@ -46,6 +46,7 @@
     <Compile Include="ADIFQSO.cs" />
     <Compile Include="ADIFQSOCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SupportClasses.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="TokenCollection.cs" />
   </ItemGroup>
