@@ -37,12 +37,17 @@ namespace ADIFLib
         public ADIFHeader(string HeaderPreText, TokenNameDataList TagNameDataListForThisQSO)
         {
             this.HeaderPreText = HeaderPreText;
-            foreach (TokenNameData anItem in TagNameDataListForThisQSO)
-            {
-                this.Add(new Token(anItem.TagName, anItem.Data));
-            }
+            if (TagNameDataListForThisQSO != null)
+                foreach (TokenNameData anItem in TagNameDataListForThisQSO)
+                {
+                    this.Add(new Token(anItem.TagName, anItem.Data));
+                }
         }
 
+        /// <summary>
+        /// Add a token to the header.
+        /// </summary>
+        /// <param name="NewItem"></param>
         public void Add(TokenNameData NewItem)
         {
             InternalAdd(NewItem);
@@ -50,7 +55,7 @@ namespace ADIFLib
 
         private void InternalAdd(TokenNameData NewItem)
         {
-            //here
+            this.Add(NewItem);
         }
 
         /// <summary>
@@ -84,7 +89,7 @@ namespace ADIFLib
         /// <returns></returns>
         public override string ToString()
         {
-            return HeaderPreText + base.ToString() + "<eoh>";
+            return String.Format("{0}{1}{2}<eoh>", HeaderPreText.Trim(), (HeaderPreText.Length==0?"":" "), base.ToString());
         }
     }
 }
